@@ -27,6 +27,7 @@ plugins {
     id("jacoco")
     id("idea")
     id("java-gradle-plugin")
+    kotlin("jvm") version "1.3.72"
 }
 
 buildScan {
@@ -57,19 +58,21 @@ val shadowVersion: String by project
 val jacocoVersion: String by project
 
 dependencies {
-    "implementation"(localGroovy())
-    "implementation"(gradleApi())
-    "implementation"("org.openjdk.jmh:jmh-core:$jmhVersion")
-    "compileOnly"("org.openjdk.jmh:jmh-generator-bytecode:$jmhVersion")
+    implementation(localGroovy())
+    implementation(gradleApi())
+    implementation("org.openjdk.jmh:jmh-core:$jmhVersion")
+    compileOnly("org.openjdk.jmh:jmh-generator-bytecode:$jmhVersion")
 
-    "testImplementation"("junit:junit:$junitVersion")
+    testImplementation("junit:junit:$junitVersion")
     testImplementation("org.spockframework:spock-core:$spockVersion") {
         exclude(mapOf("group" to "org.codehaus.groovy", "module" to "groovy-all"))
     }
-    "testImplementation"("com.github.jengelman.gradle.plugins:shadow:$shadowVersion")
+    testImplementation("com.github.jengelman.gradle.plugins:shadow:$shadowVersion")
 
-    "testImplementation"("org.openjdk.jmh:jmh-core:$jmhVersion")
-    "testImplementation"("org.openjdk.jmh:jmh-generator-bytecode:$jmhVersion")
+    testImplementation("org.openjdk.jmh:jmh-core:$jmhVersion")
+    testImplementation("org.openjdk.jmh:jmh-generator-bytecode:$jmhVersion")
+
+    implementation(kotlin("stdlib-jdk8"))
 }
 
 tasks {
@@ -87,9 +90,7 @@ tasks {
 }
 
 
-jacoco {
-    toolVersion = jacocoVersion
-}
+jacoco.toolVersion = jacocoVersion
 
 tasks.jacocoTestReport {
     group = "Reporting"

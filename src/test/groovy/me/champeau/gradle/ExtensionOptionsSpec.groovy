@@ -36,7 +36,7 @@ class ExtensionOptionsSpec extends Specification {
 
     def "Verify option #optionMethod with #value as #result (Optional)"() {
         given:
-        JMHPluginExtension extension = new JMHPluginExtension(project)
+        JmhPluginExtension extension = new JmhPluginExtension(project)
 
         when:
         extension."$extensionMethod"(value)
@@ -104,7 +104,7 @@ class ExtensionOptionsSpec extends Specification {
 
     def "Verify option #optionMethod with #value as #result (direct)"() {
         given:
-        JMHPluginExtension extension = new JMHPluginExtension(project)
+        JmhPluginExtension extension = new JmhPluginExtension(project)
 
         when:
         extension."$extensionMethod"(value)

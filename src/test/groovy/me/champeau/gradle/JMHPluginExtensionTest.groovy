@@ -21,12 +21,12 @@ import org.junit.Before
 
 class JMHPluginExtensionTest {
     Project project;
-    JMHPluginExtension extension;
+    JmhPluginExtension extension;
 
     @Before
     void setUp() {
         project = ProjectBuilder.builder().build()
-        extension = new JMHPluginExtension(project)
+        extension = new JmhPluginExtension(project)
     }
 
 }

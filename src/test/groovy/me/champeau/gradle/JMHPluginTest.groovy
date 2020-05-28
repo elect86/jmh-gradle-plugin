@@ -36,7 +36,7 @@ class JMHPluginTest {
 
 
         def task = project.tasks.findByName('jmh')
-        assert task instanceof JMHTask
+        assert task instanceof JmhTask
 
         def jmhConfigurations = project.configurations*.name.findAll { it.startsWith('jmh') }
         println(jmhConfigurations)
@@ -56,7 +56,7 @@ class JMHPluginTest {
 
 
         def task = project.tasks.findByName('jmh')
-        assert task instanceof JMHTask
+        assert task instanceof JmhTask
 
     }
 
