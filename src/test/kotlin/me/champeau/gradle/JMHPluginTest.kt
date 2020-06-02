@@ -1,6 +1,8 @@
 package me.champeau.gradle
 
 import io.kotest.core.spec.style.StringSpec
+import org.gradle.kotlin.dsl.apply
+import org.gradle.kotlin.dsl.repositories
 import org.gradle.testfixtures.ProjectBuilder
 
 class JMHPluginTest : StringSpec() {
@@ -9,17 +11,17 @@ class JMHPluginTest : StringSpec() {
 
         "plugin applied test" {
             val project = ProjectBuilder.builder().build()
-//            project.repositories {
-//                mavenLocal()
-//                jcenter()
-//            }
-//            project.apply plugin : 'java'
-//            project.apply plugin : 'me.champeau.gradle.jmh'
-//
-//
-//            def task = project . tasks . findByName ('jmh')
-//            assert task instanceof JmhTask
-//
+            project.repositories {
+                mavenLocal()
+                jcenter()
+            }
+            project.apply(plugin = "java")
+            project.apply(plugin = "me.champeau.gradle.jmh")
+
+
+//            val task = project.tasks.findByName("jmh")
+//            assert(task is JmhTask)
+
 //                    def jmhConfigurations = project . configurations *.name.findAll { it.startsWith('jmh') }
 //            println(jmhConfigurations)
 //            println project . configurations . jmhCompileClasspath . extendsFrom

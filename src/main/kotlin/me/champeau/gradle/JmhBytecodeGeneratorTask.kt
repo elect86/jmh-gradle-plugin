@@ -12,7 +12,7 @@ import java.io.File
 
 @CompileStatic
 @CacheableTask
-class JmhBytecodeGeneratorTask : DefaultTask() {
+open class JmhBytecodeGeneratorTask : DefaultTask() {
     val sourceSets = project.convention.getPlugin(JavaPluginConvention::class.java).sourceSets
     val includeTestsState: Property<Boolean> = project.getObjects().property(Boolean::class.java).convention(false)
 
@@ -43,14 +43,13 @@ class JmhBytecodeGeneratorTask : DefaultTask() {
     @TaskAction
     fun generate() {
         val workerExecutor = getServices().get(WorkerExecutor::class.java)
-        workerExecutor.submit(JmhBytecodeGeneratorRunnable::class.java) { config: WorkerConfiguration ->
-            config.isolationMode = IsolationMode.PROCESS
+        workerExecutor.submit(JmhBytecodeGeneratorRunnable::class.java) {
+            isolationMode = IsolationMode.PROCESS
             val classpath = runtimeClasspath.files
             if (getIncludeTests().get())
                 classpath += testClasses.files + testRuntimeClasspath.files
-            config.classpath = classpath
-            config.params(classesDirs.files, generatedSourcesDir, generatedClassesDir, generatorType)
+            this.classpath = classpath
+            params(classesDirs.files, generatedSourcesDir, generatedClassesDir, generatorType)
         }
     }
-
 }

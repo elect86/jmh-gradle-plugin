@@ -17,7 +17,7 @@ import javax.inject.Inject
  * JVM is created and a runner is executed using the JMH version that was used to compile the benchmarks.
  * This runner will read the options from the serialized file and execute JMH using them.
  */
-class JmhTask
+open class JmhTask
 @Inject constructor(
         private val workerExecutor: WorkerExecutor) : DefaultTask() {
     @TaskAction
@@ -25,8 +25,8 @@ class JmhTask
         val extension = project.extensions.getByType(JmhPluginExtension::class.java)
         val options = extension.resolveArgs()
         extension.resultsFile!!.parentFile.mkdirs()
-        workerExecutor.submit(IsolatedRunner::class.java) { workerConfiguration: WorkerConfiguration ->
-            workerConfiguration.isolationMode = IsolationMode.PROCESS
+        workerExecutor.submit(IsolatedRunner::class.java) {
+            isolationMode = IsolationMode.PROCESS
             val configurations = project.configurations
             var classpath = configurations.getByName("jmh").plus(project.files(jarArchive))
             if (extension.isIncludeTests)
@@ -35,9 +35,9 @@ class JmhTask
             // but we need it to be part of the "classpath under test" too.
             // We only need the jar for the benchmarks on the classpath so that the BenchmarkList resource reader
             // can find the BenchmarkList file in the jar.
-            workerConfiguration.classpath(classpath)
-            workerConfiguration.params(options, classpath.files)
-            workerConfiguration.forkOptions.systemProperties[JAVA_IO_TMPDIR] = temporaryDir
+            classpath(classpath)
+            params(options, classpath.files)
+            forkOptions.systemProperties[JAVA_IO_TMPDIR] = temporaryDir
         }
     }
 

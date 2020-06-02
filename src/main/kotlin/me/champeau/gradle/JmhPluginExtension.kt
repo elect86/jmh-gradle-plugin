@@ -10,7 +10,7 @@ import java.io.File
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class JmhPluginExtension(
+open class JmhPluginExtension(
         private val project: Project) {
     var jmhVersion = "1.21"
     val includeTests: Property<Boolean> = project.objects.property(Boolean::class.java)
