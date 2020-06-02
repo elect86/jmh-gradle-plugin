@@ -56,6 +56,7 @@ val junitVersion: String by project
 val spockVersion: String by project
 val shadowVersion: String by project
 val jacocoVersion: String by project
+val kotestVersion: String by project
 
 dependencies {
     implementation(localGroovy())
@@ -67,12 +68,17 @@ dependencies {
     testImplementation("org.spockframework:spock-core:$spockVersion") {
         exclude(mapOf("group" to "org.codehaus.groovy", "module" to "groovy-all"))
     }
+    implementation("com.github.jengelman.gradle.plugins:shadow:$shadowVersion")
     testImplementation("com.github.jengelman.gradle.plugins:shadow:$shadowVersion")
 
     testImplementation("org.openjdk.jmh:jmh-core:$jmhVersion")
     testImplementation("org.openjdk.jmh:jmh-generator-bytecode:$jmhVersion")
 
     implementation(kotlin("stdlib-jdk8"))
+
+    listOf("runner-junit5", "assertions-core", "runner-console"/*, "property"*/).forEach {
+        testImplementation("io.kotest:kotest-$it-jvm:$kotestVersion")
+    }
 }
 
 tasks {
@@ -87,6 +93,8 @@ tasks {
         dependsOn("bintrayUpload")
         dependsOn("publishPlugins")
     }
+
+    withType<Test> { useJUnitPlatform() }
 }
 
 

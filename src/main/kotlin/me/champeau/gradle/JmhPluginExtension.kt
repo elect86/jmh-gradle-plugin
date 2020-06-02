@@ -4,7 +4,7 @@ import org.gradle.api.Project
 import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.provider.Property
 import org.openjdk.jmh.annotations.Mode
-import org.openjdk.jmh.results.format.ResultFormatType.valueOf
+import org.openjdk.jmh.results.format.ResultFormatType
 import org.openjdk.jmh.runner.options.*
 import java.io.File
 import java.util.*
@@ -31,11 +31,11 @@ class JmhPluginExtension(
     var forceGC: Boolean? = null
     var jvm: String? = null
     var jvmArgs: List<String>? = ArrayList() // do not use `null` or VM args would be copied over
-        private set
+        internal set
     var jvmArgsAppend: List<String>? = null
-        private set
+        internal set
     var jvmArgsPrepend: List<String>? = null
-        private set
+        internal set
     var humanOutputFile: File? = null
     var resultsFile: File? = null
     var operationsPerInvocation: Int? = null
@@ -79,10 +79,10 @@ class JmhPluginExtension(
         for (pattern in exclude)
             optionsBuilder.exclude(pattern)
         humanOutputFile?.absolutePath?.let(optionsBuilder::output)
-        resultFormat?.toUpperCase()?.let { optionsBuilder.resultFormat(valueOf(it)) }
+        resultFormat?.toUpperCase()?.let { optionsBuilder.resultFormat(org.openjdk.jmh.results.format.ResultFormatType.valueOf(value = it)) }
         resultsFile?.absolutePath?.let(optionsBuilder::result)
         forceGC?.let(optionsBuilder::shouldDoGC)
-        verbosity?.toUpperCase()?.let { optionsBuilder.verbosity(VerboseMode.valueOf(it)) }
+        verbosity?.toUpperCase()?.let { optionsBuilder.verbosity(VerboseMode.valueOf(value = it)) }
         failOnError?.let(optionsBuilder::shouldFailOnError)
         threads?.let(optionsBuilder::threads)
         threadGroups?.toIntArray()?.let { optionsBuilder.threadGroups(*it) }
@@ -90,7 +90,7 @@ class JmhPluginExtension(
         warmupIterations?.let(optionsBuilder::warmupIterations)
         warmup?.let { optionsBuilder.warmupTime(TimeValue.fromString(it)) }
         warmupBatchSize?.let(optionsBuilder::warmupBatchSize)
-        warmupMode?.let { optionsBuilder.warmupMode(WarmupMode.valueOf(it)) }
+        warmupMode?.let { optionsBuilder.warmupMode(WarmupMode.valueOf(value = it)) }
         warmupBenchmarks?.forEach { optionsBuilder.includeWarmup(it) }
         iterations?.let(optionsBuilder::measurementIterations)
         timeOnIteration?.let { optionsBuilder.measurementTime(TimeValue.fromString(it)) }
