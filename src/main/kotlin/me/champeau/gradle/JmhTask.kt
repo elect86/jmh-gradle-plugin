@@ -1,13 +1,11 @@
 package me.champeau.gradle
 
-import me.champeau.gradle.JmhPlugin.Companion.JMH_JAR_TASK_NAME
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.TaskAction
 import org.gradle.jvm.tasks.Jar
 import org.gradle.workers.IsolationMode
-import org.gradle.workers.WorkerConfiguration
 import org.gradle.workers.WorkerExecutor
 import javax.inject.Inject
 
@@ -42,7 +40,7 @@ open class JmhTask
     }
 
     private val jarArchive: Provider<RegularFile>
-        get() = (project.tasks.getByName(JMH_JAR_TASK_NAME) as Jar).archiveFile
+        get() = (project.tasks.getByName(Jmh.jarTaskName) as Jar).archiveFile
 
     companion object {
         private const val JAVA_IO_TMPDIR = "java.io.tmpdir"

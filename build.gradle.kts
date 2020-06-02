@@ -30,6 +30,8 @@ plugins {
     id("org.gradle.kotlin.kotlin-dsl") version "1.3.6"
 }
 
+kotlinDslPluginOptions.experimentalWarning.set(false)
+
 buildScanRecipes {
     recipes("git-status", "travis-ci")
     recipe(mapOf("baseUrl" to "https://github.com/melix/jmh-gradle-plugin/tree"), "git-commit")
