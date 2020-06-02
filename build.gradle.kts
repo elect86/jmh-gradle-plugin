@@ -15,7 +15,6 @@
  */
 
 plugins {
-    id("com.gradle.build-scan") version "2.1"
     id("me.champeau.buildscan-recipes") version "0.2.3"
     id("com.jfrog.bintray") version "1.8.0"
     id("com.jfrog.artifactory") version "4.6.0"
@@ -30,26 +29,19 @@ plugins {
     kotlin("jvm") version "1.3.72"
 }
 
-buildScan {
-    termsOfServiceUrl = "https://gradle.com/terms-of-service"
-    termsOfServiceAgree = "yes"
-
-    publishAlways()
-}
-
 buildScanRecipes {
     recipes("git-status", "travis-ci")
     recipe(mapOf("baseUrl" to "https://github.com/melix/jmh-gradle-plugin/tree"), "git-commit")
 }
 
-apply(from="gradle/credentials.gradle")
-apply(from="gradle/compile.gradle")
-apply(from="gradle/test.gradle")
-apply(from="gradle/funcTest.gradle")
-apply(from="gradle/publishing.gradle")
-apply(from="gradle/bintray.gradle")
-apply(from="gradle/artifactory.gradle")
-apply(from="gradle/code-quality.gradle")
+apply(from = "gradle/credentials.gradle")
+apply(from = "gradle/compile.gradle")
+apply(from = "gradle/test.gradle")
+apply(from = "gradle/funcTest.gradle")
+apply(from = "gradle/publishing.gradle")
+apply(from = "gradle/bintray.gradle")
+apply(from = "gradle/artifactory.gradle")
+apply(from = "gradle/code-quality.gradle")
 
 val jmhVersion: String by project
 val junitVersion: String by project

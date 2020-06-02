@@ -23,8 +23,10 @@ import org.openjdk.jmh.results.format.ResultFormatType
 import org.openjdk.jmh.runner.options.Options
 import org.openjdk.jmh.runner.options.TimeValue
 import org.openjdk.jmh.runner.options.VerboseMode
+import org.openjdk.jmh.runner.options.WarmupMode
 import org.openjdk.jmh.util.Optional
 import java.io.File
+import java.util.concurrent.TimeUnit
 
 class ExtensionOptionsSpec : StringSpec() {
 
@@ -150,7 +152,6 @@ class ExtensionOptionsSpec : StringSpec() {
                 extension.jvmArgsAppend = arg
                 args.jvmArgsAppend shouldBe arg
             }
-
             jvmArgsAppend()
             jvmArgsAppend(listOf("Custom JVM args"))
 
@@ -158,7 +159,6 @@ class ExtensionOptionsSpec : StringSpec() {
                 extension.jvmArgsPrepend = arg
                 args.jvmArgsPrepend shouldBe arg
             }
-
             jvmArgsPrepend()
             jvmArgsPrepend(listOf("Custom JVM args"))
 
@@ -166,7 +166,6 @@ class ExtensionOptionsSpec : StringSpec() {
                 extension.resultsFile = file
                 args.result shouldBe res
             }
-
             result(res = project.file("build/reports/jmh/results.txt").absolutePath)
             result(project.file("res.txt"), project.file("res.txt").absolutePath)
 
@@ -174,21 +173,50 @@ class ExtensionOptionsSpec : StringSpec() {
                 extension.operationsPerInvocation = operations
                 args.operationsPerInvocation shouldBe operations
             }
-
             invocation()
             invocation(10)
-//            'getMeasurementTime'         | 'setTimeOnIteration'         | null                    || null
-//            'getMeasurementTime'         | 'setTimeOnIteration'         | '1s'                    || TimeValue.seconds(1)
-//            'getTimeout'                 | 'setTimeout'                 | null                    || null
-//            'getTimeout'                 | 'setTimeout'                 | '60s'                   || TimeValue.seconds(60)
-//            'getTimeUnit'                | 'setTimeUnit'                | null                    || null
-//            'getTimeUnit'                | 'setTimeUnit'                | 'ms'                    || TimeUnit.MILLISECONDS
-//            'getWarmupBatchSize'         | 'setWarmupBatchSize'         | null                    || null
-//            'getWarmupBatchSize'         | 'setWarmupBatchSize'         | 10                      || 10
-//            'getWarmupForkCount'         | 'setWarmupForks'             | null                    || null
-//            'getWarmupForkCount'         | 'setWarmupForks'             | 0                       || 0
-//            'getWarmupMode'              | 'setWarmupMode'              | null                    || null
-//            'getWarmupMode'              | 'setWarmupMode'              | 'INDI'                  || WarmupMode.INDI
+
+            fun timeOnIteration(it: String? = null, res: TimeValue? = null) {
+                extension.timeOnIteration = it
+                args.measurementTime shouldBe res
+            }
+            timeOnIteration()
+            timeOnIteration("1s", TimeValue.seconds(1))
+
+            fun timeout(it: String? = null, res: TimeValue? = null) {
+                extension.timeout = it
+                args.timeout shouldBe res
+            }
+            timeout()
+            timeout("60s", TimeValue.seconds(60))
+
+            fun timeUnit(it: String? = null, res: TimeUnit? = null) {
+                extension.timeUnit = it
+                args.timeUnit shouldBe res
+            }
+            timeUnit()
+            timeUnit("ms", TimeUnit.MILLISECONDS)
+
+            fun warmupBatchSize(it: Int? = null) {
+                extension.warmupBatchSize = it
+                args.warmupBatchSize shouldBe it
+            }
+            warmupBatchSize()
+            warmupBatchSize(10)
+
+            fun warmupForks(it: Int? = null) {
+                extension.warmupForks = it
+                args.warmupForkCount shouldBe it
+            }
+            warmupForks()
+            warmupForks(0)
+
+            fun warmupMode(it: String? = null, res: WarmupMode? = null) {
+                extension.warmupMode = it
+                args.warmupMode shouldBe res
+            }
+            warmupMode()
+            warmupMode("INDI", WarmupMode.INDI)
         }
     }
 }
