@@ -65,10 +65,10 @@ val TaskContainer.jmhCompileGeneratedClasses: JavaCompile
 fun TaskContainer.jmhCompileGeneratedClasses(block: JavaCompile.() -> Unit) = jmhCompileGeneratedClasses.block()
 
 
-val TaskContainer.shadowJar: ShadowJar
-    get() = findByName("shadowJar") as? ShadowJar ?: create("shadowJar", ShadowJar::class.java)
-
-fun TaskContainer.shadowJar(block: ShadowJar.() -> Unit) = shadowJar.block()
+//val TaskContainer.shadowJar: ShadowJar
+//    get() = findByName("shadowJar") as? ShadowJar ?: create("shadowJar", ShadowJar::class.java)
+//
+//fun TaskContainer.shadowJar(block: ShadowJar.() -> Unit) = shadowJar.block()
 
 
 val SourceSetContainer.main: SourceSet

@@ -1,5 +1,7 @@
 package me.champeau.gradle
 
+import com.github.jengelman.gradle.plugins.shadow.ShadowPlugin
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.gradle.BuildAdapter
 import org.gradle.BuildResult
 import org.gradle.api.Plugin
@@ -47,12 +49,12 @@ open class JmhPlugin : Plugin<Project> {
 
         val metaInfExcludes = listOf("module-info.class", "META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA")
         when {
-            project.plugins.findPlugin("com.github.johnrengelman.shadow") != null ->
+            project.plugins.findPlugin(ShadowPlugin::class.java) != null ->
                 createShadowJmhJar(project, extension, jmhGeneratedResourcesDir, jmhGeneratedClassesDir, metaInfExcludes, runtimeConfiguration)
             else ->
                 createStandardJmhJar(project, extension, metaInfExcludes, jmhGeneratedResourcesDir, jmhGeneratedClassesDir, runtimeConfiguration)
         }
-        project.tasks.register(Jmh.name, JmhTask::class.java) {
+        project.tasks.jmh {
             group = Jmh.group
             dependsOn(project.tasks.jmhJar)
         }
@@ -132,38 +134,40 @@ open class JmhPlugin : Plugin<Project> {
             project: Project, extension: JmhPluginExtension, jmhGeneratedResourcesDir: File,
             jmhGeneratedClassesDir: File, metaInfExcludes: List<String>,
             runtimeConfiguration: Configuration
-    ) = project.tasks.shadowJar {
-        group = Jmh.group
-        dependsOn(Jmh.taskCompileGeneratedClassesName)
-        description = "Create a combined JAR of project and runtime dependencies"
-        conventionMapping.map("classifier") { Jmh.name }
-        manifest.inheritFrom(project.tasks.jar.manifest)
-        manifest.attributes.mainClass = "org.openjdk.jmh.Main"
-        from(runtimeConfiguration)
-        doFirst {
-            fun processLibs(files: MutableSet<File>) {
-                if (files.isNotEmpty()) {
-                    val libs = files.map { it.name } + manifest.attributes.classPath
-                    manifest.attributes.classPath = libs.distinct().joinToString(" ")
+    ) {
+        project.tasks.create(Jmh.jarTaskName, ShadowJar::class.java) {
+            group = Jmh.group
+            dependsOn(Jmh.taskCompileGeneratedClassesName)
+            description = "Create a combined JAR of project and runtime dependencies"
+            conventionMapping.map("classifier") { Jmh.name }
+            manifest.inheritFrom(project.tasks.jar.manifest)
+            manifest.attributes.mainClass = "org.openjdk.jmh.Main"
+            from(runtimeConfiguration)
+            doFirst {
+                fun processLibs(files: MutableSet<File>) {
+                    if (files.isNotEmpty()) {
+                        val libs = files.map { it.name } + manifest.attributes.classPath
+                        manifest.attributes.classPath = libs.distinct().joinToString(" ")
+                    }
+                }
+                processLibs(runtimeConfiguration.files)
+                processLibs(project.configurations.shadow.files)
+
+                if (extension.isIncludeTests)
+                    from(project.sourceSets.test.output)
+                eachFile {
+                    if (name.endsWith(".class"))
+                        duplicatesStrategy = extension.duplicateClassesStrategy
                 }
             }
-            processLibs(runtimeConfiguration.files)
-            processLibs(project.configurations.shadow.files)
+            from(project.sourceSets.jmh.output)
+            from(project.sourceSets.main.output)
+            from(project.file(jmhGeneratedClassesDir))
+            from(project.file(jmhGeneratedResourcesDir))
 
-            if (extension.isIncludeTests)
-                from(project.sourceSets.test.output)
-            eachFile {
-                if (name.endsWith(".class"))
-                    duplicatesStrategy = extension.duplicateClassesStrategy
-            }
+            exclude(metaInfExcludes)
+            configurations.clear()
         }
-        from(project.sourceSets.jmh.output)
-        from(project.sourceSets.main.output)
-        from(project.file(jmhGeneratedClassesDir))
-        from(project.file(jmhGeneratedResourcesDir))
-
-        exclude(metaInfExcludes)
-        configurations.clear()
     }
 
     companion object {

@@ -1,9 +1,12 @@
 package me.champeau.gradle
 
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import io.kotest.core.spec.style.StringSpec
 import org.gradle.api.Project
+import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.kotlin.dsl.apply
 import org.gradle.kotlin.dsl.get
+import org.gradle.kotlin.dsl.getAt
 import org.gradle.kotlin.dsl.repositories
 import org.gradle.testfixtures.ProjectBuilder
 
@@ -58,50 +61,28 @@ class JMHPluginTest : StringSpec() {
             project.extensions.jmh.isZip64 = true
 
             val task = project.tasks.jmhJar
-            assert(task.isZip64)
+//            assert(task.isZip64)
         }
 
-//        @Test
-//        void testAllJmhTasksBelongToJmhGroup () {
-//            Project project = ProjectBuilder . builder ().build()
-//            project.repositories {
-//                mavenLocal()
-//                jcenter()
-//            }
-//            project.apply plugin : 'java'
-//            project.apply plugin : 'me.champeau.gradle.jmh'
-//
-//            project.tasks.find { it.name.startsWith('jmh') }.each {
-//                assert it . group == JMHPlugin . JMH_GROUP
-//            }
-//        }
-//
-//        @Test
-//        void testPluginIsAppliedTogetherWithShadow () {
-//            Project project = ProjectBuilder . builder ().build()
-//            project.repositories {
-//                mavenLocal()
-//                jcenter()
-//            }
-//            project.apply plugin : 'java'
-//            project.apply plugin : 'com.github.johnrengelman.shadow'
-//            project.apply plugin : 'me.champeau.gradle.jmh'
-//
-//            def task = project . tasks . findByName ('jmhJar')
-//            assert task instanceof ShadowJar
-//        }
-//
-//        @Test
-//        void testDuplicateClassesStrategyIsSetToFailByDefault () {
-//            Project project = ProjectBuilder . builder ().build()
-//            project.repositories {
-//                mavenLocal()
-//                jcenter()
-//            }
-//            project.apply plugin : 'java'
-//            project.apply plugin : 'me.champeau.gradle.jmh'
-//
-//            assert project . jmh . duplicateClassesStrategy == DuplicatesStrategy . FAIL
-//        }
+        "all jmh tasks belong to jmhGroup?" {
+            val project = setup("java")
+
+            project.tasks.filter { it.name.startsWith("jmh") && it.name != "jmhClasses" }
+                    .forEach { assert(it.group == Jmh.group) }
+        }
+
+        "is plugin applied together with shadow?" {
+            val project = setup("java", "com.github.johnrengelman.shadow")
+
+            val task = project.tasks.jmhJar
+            println(task::class.java)
+            assert(task is ShadowJar)
+        }
+
+        "is duplicate classes strategy set to fail by default?" {
+            val project = setup("java")
+
+            assert(project.extensions.jmh.duplicateClassesStrategy == DuplicatesStrategy.FAIL)
+        }
     }
 }
