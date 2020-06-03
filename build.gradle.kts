@@ -32,6 +32,13 @@ plugins {
 
 kotlinDslPluginOptions.experimentalWarning.set(false)
 
+allprojects {
+    repositories {
+        mavenCentral()
+        maven("https://oss.sonatype.org/content/repositories/snapshots/")
+    }
+}
+
 buildScanRecipes {
     recipes("git-status", "travis-ci")
     recipe(mapOf("baseUrl" to "https://github.com/melix/jmh-gradle-plugin/tree"), "git-commit")

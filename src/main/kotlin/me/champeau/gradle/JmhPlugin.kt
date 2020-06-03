@@ -23,6 +23,7 @@ open class JmhPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         if (!`is gradle 5,5+?`)
             throw RuntimeException("This version of the JMH Gradle plugin requires Gradle 5.5+. Please upgrade Gradle or use an older version of the plugin.")
+        println(project.name + ", repos = " + project.repositories.size)
         project.plugins.apply(JavaPlugin::class.java)
         val extension = project.extensions.create(Jmh.name, JmhPluginExtension::class.java, project)
         val configuration = project.configurations.create(Jmh.name)
@@ -237,6 +238,9 @@ open class JmhPlugin : Plugin<Project> {
             inputs.files(project.sourceSets.main.output)
             if (extension.includeTests.get())
                 inputs.files.plus(project.sourceSets.test.output)
+            val a = runtimeConfiguration.asFileTree
+            println(project.repositories.size)
+            project.repositories.forEach { println(it) }
             from(runtimeConfiguration.asFileTree.map { f ->
                 if (f.isDirectory) f else project.zipTree(f)
             }.toTypedArray()).exclude(metaInfExcludes)

@@ -45,7 +45,7 @@ open class JmhBytecodeGeneratorTask : DefaultTask() {
         val workerExecutor = services.get(WorkerExecutor::class.java)
         workerExecutor.submit(JmhBytecodeGeneratorRunnable::class.java) {
             isolationMode = IsolationMode.PROCESS
-            val classpath = runtimeClasspath.files
+            val classpath = runtimeClasspath.files.toMutableSet()
             if (getIncludeTests().get())
                 classpath += testClasses.files + testRuntimeClasspath.files
             this.classpath = classpath
