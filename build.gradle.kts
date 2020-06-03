@@ -27,7 +27,7 @@ plugins {
     id("idea")
     id("java-gradle-plugin")
     kotlin("jvm") version "1.3.72"
-    id("org.gradle.kotlin.kotlin-dsl") version "1.3.6"
+    id("org.gradle.kotlin.kotlin-dsl") version "1.3.5"
 }
 
 kotlinDslPluginOptions.experimentalWarning.set(false)

@@ -14,7 +14,7 @@ import java.io.File
 @CacheableTask
 open class JmhBytecodeGeneratorTask : DefaultTask() {
     val sourceSets = project.convention.getPlugin(JavaPluginConvention::class.java).sourceSets
-    val includeTestsState: Property<Boolean> = project.getObjects().property(Boolean::class.java).convention(false)
+    val includeTestsState: Property<Boolean> = project.objects.property(Boolean::class.java).convention(false)
 
     @Classpath
     val runtimeClasspath = sourceSets.getByName("jmh").runtimeClasspath
@@ -42,7 +42,7 @@ open class JmhBytecodeGeneratorTask : DefaultTask() {
 
     @TaskAction
     fun generate() {
-        val workerExecutor = getServices().get(WorkerExecutor::class.java)
+        val workerExecutor = services.get(WorkerExecutor::class.java)
         workerExecutor.submit(JmhBytecodeGeneratorRunnable::class.java) {
             isolationMode = IsolationMode.PROCESS
             val classpath = runtimeClasspath.files

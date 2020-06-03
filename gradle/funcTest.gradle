@@ -17,6 +17,7 @@
 sourceSets {
     functionalTest {
         groovy.srcDir file('src/funcTest/groovy')
+        kotlin.srcDir file('src/funcTest/kotlin')
         resources.srcDir file('src/funcTest/resources')
         compileClasspath += sourceSets.main.output + configurations.testRuntimeClasspath
         runtimeClasspath += output + compileClasspath
@@ -36,8 +37,13 @@ task createClasspathManifest {
 }
 
 dependencies {
+    functionalTestImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     functionalTestImplementation gradleTestKit()
     functionalTestImplementation files(createClasspathManifest)
+
+    ["runner-junit5", "assertions-core", "runner-console"/*, "property"*/].each {
+        functionalTestImplementation "io.kotest:kotest-$it-jvm:$kotestVersion"
+    }
 }
 
 compileFunctionalTestJava.dependsOn createClasspathManifest
