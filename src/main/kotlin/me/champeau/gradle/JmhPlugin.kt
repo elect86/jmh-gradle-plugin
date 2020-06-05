@@ -8,9 +8,10 @@ import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.initialization.Settings
+import org.gradle.api.internal.file.copy.CopySpecInternal
 import org.gradle.api.invocation.Gradle
 import org.gradle.api.plugins.JavaPlugin
-import org.gradle.jvm.tasks.Jar
+import org.gradle.api.tasks.bundling.Jar
 import org.gradle.plugins.ide.eclipse.EclipsePlugin
 import org.gradle.plugins.ide.eclipse.EclipseWtpPlugin
 import org.gradle.plugins.ide.eclipse.model.EclipseModel
@@ -23,7 +24,7 @@ open class JmhPlugin : Plugin<Project> {
     override fun apply(project: Project) {
         if (!`is gradle 5,5+?`)
             throw RuntimeException("This version of the JMH Gradle plugin requires Gradle 5.5+. Please upgrade Gradle or use an older version of the plugin.")
-        println(project.name + ", repos = " + project.repositories.size)
+//        println(project.name + ", repos = " + project.repositories.size)
         project.plugins.apply(JavaPlugin::class.java)
         val extension = project.extensions.create(Jmh.name, JmhPluginExtension::class.java, project)
         val configuration = project.configurations.create(Jmh.name)
@@ -238,12 +239,16 @@ open class JmhPlugin : Plugin<Project> {
             inputs.files(project.sourceSets.main.output)
             if (extension.includeTests.get())
                 inputs.files.plus(project.sourceSets.test.output)
-            val a = runtimeConfiguration.asFileTree
+
+            println(runtimeConfiguration.allDependencies.size)
+            println(runtimeConfiguration.allArtifacts.size)
+            runtimeConfiguration.allArtifacts.forEach(::println)
             println(project.repositories.size)
-            project.repositories.forEach { println(it) }
-            from(runtimeConfiguration.asFileTree.map { f ->
-                if (f.isDirectory) f else project.zipTree(f)
-            }.toTypedArray()).exclude(metaInfExcludes)
+            from({
+                runtimeConfiguration.asFileTree.map { f ->
+                    if (f.isDirectory) f else project.zipTree(f)
+                }
+            }).exclude(metaInfExcludes)
             doFirst {
                 this as Jar
                 from(project.sourceSets.jmh.output)

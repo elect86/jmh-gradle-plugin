@@ -7,7 +7,7 @@ import java.io.File
 class MultiLanguageSpec_ : StringSpec() {
     init {
         "Execute #language benchmarks" {
-            listOf("groovy", "java", "kotlin", "scala").forEach { language ->
+            listOf(/*"groovy", */"java"/*, "kotlin", "scala"*/).forEach { language ->
                 val projectDir = File("src/funcTest/resources/$language-project")
                 val pluginClasspathResource = this::class.java.classLoader.getResourceAsStream("plugin-classpath.txt")
                         ?: throw IllegalStateException("Did not find plugin classpath resource, run `testClasses` build task.")
@@ -16,7 +16,7 @@ class MultiLanguageSpec_ : StringSpec() {
                 val project = GradleRunner.create()
                         .withProjectDir(projectDir)
                         .withPluginClasspath(pluginClasspath)
-                        .withArguments("-S", "clean")//, "jmh")
+                        .withArguments("-S", "clean", "jmh")
                         .forwardOutput()
                         .build()
 

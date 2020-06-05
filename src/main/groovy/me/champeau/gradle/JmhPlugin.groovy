@@ -1,20 +1,20 @@
-/*
- * Copyright 2014-2017 the original author or authors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package me.champeau.gradle
-
+///*
+// * Copyright 2014-2017 the original author or authors.
+// *
+// * Licensed under the Apache License, Version 2.0 (the "License");
+// * you may not use this file except in compliance with the License.
+// * You may obtain a copy of the License at
+// *
+// *     http://www.apache.org/licenses/LICENSE-2.0
+// *
+// * Unless required by applicable law or agreed to in writing, software
+// * distributed under the License is distributed on an "AS IS" BASIS,
+// * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// * See the License for the specific language governing permissions and
+// * limitations under the License.
+// */
+//package me.champeau.gradle
+//
 //import groovy.transform.CompileStatic
 //import org.gradle.BuildAdapter
 //import org.gradle.api.Action
@@ -38,7 +38,7 @@ package me.champeau.gradle
 ///**
 // * Configures the JMH Plugin.
 // */
-//class JMHPlugin implements Plugin<Project> {
+//class JmhPlugin implements Plugin<Project> {
 //    private static boolean IS_GRADLE_MIN_55 = GradleVersion.current().compareTo(GradleVersion.version("5.5.0")) >= 0
 //
 //    public static final String JMH_CORE_DEPENDENCY = 'org.openjdk.jmh:jmh-core:'
@@ -54,7 +54,7 @@ package me.champeau.gradle
 //            throw new RuntimeException("This version of the JMH Gradle plugin requires Gradle 5.5+. Please upgrade Gradle or use an older version of the plugin.");
 //        }
 //        project.plugins.apply(JavaPlugin)
-//        final JMHPluginExtension extension = project.extensions.create(JMH_NAME, JMHPluginExtension, project)
+//        final JmhPluginExtension extension = project.extensions.create(JMH_NAME, JMHPluginExtension, project)
 //        final Configuration configuration = project.configurations.create(JMH_NAME)
 //        final Configuration runtimeConfiguration = createJmhRuntimeConfiguration(project, extension)
 //
@@ -127,13 +127,13 @@ package me.champeau.gradle
 //                .rootProject
 //                .extensions
 //                .extraProperties
-//        AtomicReference<JMHTask> lastAddedRef = rootExtra.has('jmhLastAddedTask') ?
-//                (AtomicReference<JMHTask>) rootExtra.get('jmhLastAddedTask') : new AtomicReference<JMHTask>()
+//        AtomicReference<JmhTask> lastAddedRef = rootExtra.has('jmhLastAddedTask') ?
+//                (AtomicReference<JmhTask>) rootExtra.get('jmhLastAddedTask') : new AtomicReference<JmhTask>()
 //        rootExtra.set('jmhLastAddedTask', lastAddedRef)
 //
-//        project.tasks.withType(JMHTask, new Action<JMHTask>() {
+//        project.tasks.withType(JmhTask, new Action<JmhTask>() {
 //            @Override
-//            void execute(final JMHTask task) {
+//            void execute(final JmhTask task) {
 //                def lastAdded = lastAddedRef.getAndSet(task)
 //                if (lastAdded) {
 //                    task.mustRunAfter(lastAdded)
@@ -142,7 +142,7 @@ package me.champeau.gradle
 //        })
 //    }
 //
-//    private Task createJmhCompileGeneratedClassesTask(Project project, File jmhGeneratedSourcesDir, File jmhGeneratedClassesDir, JMHPluginExtension extension) {
+//    private Task createJmhCompileGeneratedClassesTask(Project project, File jmhGeneratedSourcesDir, File jmhGeneratedClassesDir, JmhPluginExtension extension) {
 //        createTask(project, JMH_TASK_COMPILE_GENERATED_CLASSES_NAME, JavaCompile) {
 //            it.group JMH_GROUP
 //            it.dependsOn 'jmhRunBytecodeGenerator'
@@ -156,7 +156,7 @@ package me.champeau.gradle
 //        }
 //    }
 //
-//    private Task createJmhRunBytecodeGeneratorTask(Project project, File jmhGeneratedSourcesDir, JMHPluginExtension extension, File jmhGeneratedResourcesDir) {
+//    private Task createJmhRunBytecodeGeneratorTask(Project project, File jmhGeneratedSourcesDir, JmhPluginExtension extension, File jmhGeneratedResourcesDir) {
 //        createTask(project, 'jmhRunBytecodeGenerator', JmhBytecodeGeneratorTask) {
 //            it.group JMH_GROUP
 //            it.dependsOn 'jmhClasses'
@@ -185,8 +185,8 @@ package me.champeau.gradle
 //        }
 //    }
 //
-//    private void createShadowJmhJar(Project project, JMHPluginExtension extension, File jmhGeneratedResourcesDir, File jmhGeneratedClassesDir, List<String> metaInfExcludes, Configuration runtimeConfiguration) {
-//        createTask(project, JMH_JAR_TASK_NAME, Class.forName('com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar', true, JMHPlugin.classLoader)) {
+//    private void createShadowJmhJar(Project project, JmhPluginExtension extension, File jmhGeneratedResourcesDir, File jmhGeneratedClassesDir, List<String> metaInfExcludes, Configuration runtimeConfiguration) {
+//        createTask(project, JMH_JAR_TASK_NAME, Class.forName('com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar', true, JmhPlugin.classLoader)) {
 //            it.group = JMH_GROUP
 //            it.dependsOn(JMH_TASK_COMPILE_GENERATED_CLASSES_NAME)
 //            it.description = 'Create a combined JAR of project and runtime dependencies'
@@ -228,7 +228,7 @@ package me.champeau.gradle
 //        }
 //    }
 //
-//    private Task createStandardJmhJar(Project project, JMHPluginExtension extension, List<String> metaInfExcludes, File jmhGeneratedResourcesDir, File jmhGeneratedClassesDir, Configuration runtimeConfiguration) {
+//    private Task createStandardJmhJar(Project project, JmhPluginExtension extension, List<String> metaInfExcludes, File jmhGeneratedResourcesDir, File jmhGeneratedClassesDir, Configuration runtimeConfiguration) {
 //        createTask(project, JMH_JAR_TASK_NAME, Jar) {
 //            it.group JMH_GROUP
 //            it.dependsOn JMH_TASK_COMPILE_GENERATED_CLASSES_NAME
@@ -266,7 +266,7 @@ package me.champeau.gradle
 //    }
 //
 //    private void registerBuildListener(
-//            final Project project, final JMHPluginExtension extension) {
+//            final Project project, final JmhPluginExtension extension) {
 //        project.gradle.addBuildListener(new BuildAdapter() {
 //            @Override
 //            void projectsEvaluated(Gradle gradle) {
@@ -289,7 +289,7 @@ package me.champeau.gradle
 //    // automatically when creating a source set. That is to say, "jmhRuntimeOnly" for example and wire
 //    // our classpath properly
 //    @CompileStatic
-//    private static Configuration createJmhRuntimeConfiguration(Project project, JMHPluginExtension extension) {
+//    private static Configuration createJmhRuntimeConfiguration(Project project, JmhPluginExtension extension) {
 //        def newConfig = project.configurations.create(JHM_RUNTIME_CONFIGURATION)
 //        newConfig.setCanBeConsumed(false)
 //        newConfig.setCanBeResolved(true)

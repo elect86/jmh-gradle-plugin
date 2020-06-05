@@ -49,7 +49,7 @@ open class JmhBytecodeGeneratorTask : DefaultTask() {
             if (getIncludeTests().get())
                 classpath += testClasses.files + testRuntimeClasspath.files
             this.classpath = classpath
-            params(classesDirs.files, generatedSourcesDir, generatedClassesDir, generatorType)
+            params(classesDirs.files.toTypedArray(), generatedSourcesDir, generatedClassesDir, generatorType)
         }
     }
 }
